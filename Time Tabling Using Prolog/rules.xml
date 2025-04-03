@@ -1,0 +1,89 @@
+<requirements>
+<global numslots="25" slotsperday="5"/>
+<class id="dit_y1s1">
+<req subject="comp_app" teacher="cedrick" amount="2"/>
+<req subject="intro_ict" teacher="akoko" amount="2"/>
+<req subject="os" teacher="bett" amount="2"/>
+<req subject="maths" teacher="nelly" amount="2"/>
+<req subject="comm_skills" teacher="patrick" amount="2"/>
+<req subject="dtp" teacher="nelly" amount="2"/>
+<free slot="0"/>
+<free slot="4"/>
+<free slot="12"/>
+<free slot="13"/>
+<free slot="14"/>
+<free slot="17"/>
+<free slot="19"/>
+
+</class>
+<class id="dit_y1s2">
+<req subject="electronics" teacher="cedrick" amount="2"/>
+<req subject="pcsm" teacher="cedrick" amount="2"/>
+<req subject="networks" teacher="akoko" amount="2"/>
+<req subject="sad" teacher="bett" amount="2"/>
+<req subject="struct_prog" teacher="patrick" amount="2"/>
+<req subject="dbase_syst" teacher="bett" amount="2"/>
+<free slot="3"/>
+<free slot="1"/>
+<free slot="11"/>
+<free slot="12"/>
+<free slot="17"/>
+<free slot="18"/>
+<free slot="19"/>
+</class>
+
+<class id="dit_y2s1">
+<req subject="adv_dbase" teacher="akoko" amount="2"/>
+<req subject="web_dev_1" teacher="cedrick" amount="3"/>
+<req subject="soft_eng" teacher="jared" amount="2"/>
+<req subject="oop" teacher="nelly" amount="2"/>
+<req subject="oosad" teacher="bett" amount="2"/>
+<req subject="research" teacher="patrick" amount="2"/>
+<free slot="0"/>
+<free slot="4"/>
+<free slot="6"/>
+<free slot="8"/>
+<free slot="9"/>
+<free slot="13"/>
+<free slot="14"/>
+<free slot="17"/>
+<free slot="18"/>
+
+
+</class>
+<class id="dit_y2s2">
+<req subject="web_dev_2" teacher="cedrick" amount="2"/>
+<req subject="mobile_computing" teacher="nelly" amount="2"/>
+<req subject="adv_oop" teacher="nelly" amount="2"/>
+<req subject="adv_pcsm" teacher="patrick" amount="2"/>
+<req subject="entrepre" teacher="bett" amount="2"/>
+<req subject="comp_security" teacher="jared" amount="2"/>
+<free slot="2"/>
+<free slot="12"/>
+<free slot="14"/>
+
+
+</class>
+
+
+<room id="room_1">
+<allocate class="dit_y1s2" subject="electronics" lesson="0"/>
+<allocate class="dit_y2s2" subject="mobile_computing" lesson="1"/>
+</room>
+
+<room id="room_2">
+<allocate class="dit_y2s1" subject="web_dev_1" lesson="2"/>
+</room>
+
+<freeday teacher="akoko" day="0"/>
+<freeday teacher="akoko" day="2"/>
+<freeday teacher="bett" day="1"/>
+<freeday teacher="bett" day="2"/>
+<freeday teacher="bett" day="3"/>
+<freeday teacher="cedrick" day="1"/>
+<freeday teacher="cedrick" day="3"/>
+<freeday teacher="jared" day="0"/>
+<freeday teacher="jared" day="3"/>
+<freeday teacher="nelly" day="1"/>
+<freeday teacher="nelly" day="3"/>
+</requirements>

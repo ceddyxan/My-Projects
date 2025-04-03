@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" href="css/menu.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>CCI502 virtual doc: Evaluate Symptoms</title>
+    <script src="js/underscore-min.js"></script>
+    <script src="js/expert.js"></script>
+    <script>
+
+        const expert = module.exports;
+        const domain = expert.Domain(),
+            Concept = domain.Concept,
+            Relation = domain.Relation;
+
+        //KNOWLEDGE BASE
+
+        //create concepts
+        const disease = Concept.create({id: "disease"});
+        const symptom = Concept.create({id: "symptoms"});
+
+        //relationships
+        const isa = domain.isa;
+        const hasSymptom = Relation.create({id: "hasSymptom"});
+        const whatHasSymptom = Relation.create({id: "whatHasSymptom", inverseFor: hasSymptom});
+
+        //diseases
+        const malaria = Concept.create({id: "malaria"});
+        const pneumonia = Concept.create({id: "pneumonia"});
+        const cold = Concept.create({id: "cold"});
+
+        //symptoms
+        const fever = Concept.create({id: "fever"}).isa(symptom);
+        const runningNose= Concept.create({id: "runningNose"}).isa(symptom);
+        const dizziness = Concept.create({id: "dizziness"}).isa(symptom);
+        const stuffyNose = Concept.create({id: "stuffyNose"}).isa(symptom);
+        const breathingDifficulty = Concept.create({id: "breathingDifficulty"}).isa(symptom);
+        const fatigue = Concept.create({id: "fatigue"}).isa(symptom);
+        const jointPains = Concept.create({id: "jointPains"}).isa(symptom);
+        const shiver = Concept.create({id: "shiver"}).isa(symptom);
+        const phlegm = Concept.create({id: "phlegm"}).isa(symptom);
+        const cough = Concept.create({id: "cough"}).isa(symptom);
+        const sneeze = Concept.create({id: "sneeze"}).isa(symptom);
+        const headache = Concept.create({id: "headache"}).isa(symptom);
+        const weakness = Concept.create({id: "weakness"}).isa(symptom);
+        const chestPains = Concept.create({id: "chestPains"}).isa(symptom);
+        const soreThroat = Concept.create({id: "soreThroat"}).isa(symptom);
+
+
+        //Rules
+        //malaria implies sick
+        //fever ^ shivering ^ headache ^ weakness implies malaria
+
+        malaria
+            .isa(disease)
+            .hasSymptom(fever)
+            .hasSymptom(dizziness)
+            .hasSymptom(headache)
+            .hasSymptom(weakness)
+            .hasSymptom(jointPains)
+            .hasSymptom(fatigue);
+
+        cold
+            .isa(disease)
+            .hasSymptom(runningNose)
+            .hasSymptom(fever)
+            .hasSymptom(cough)
+            .hasSymptom(sneeze)
+            .hasSymptom(soreThroat)
+            .hasSymptom(stuffyNose)
+            .hasSymptom(headache);
+
+        pneumonia
+            .isa(disease)
+            .hasSymptom(chestPains)
+            .hasSymptom(cough)
+            .hasSymptom(breathingDifficulty)
+            .hasSymptom(phlegm);
+
+        const doDiagnosis = function (symptoms) {
+            if (!symptoms) {
+                alert("Please specify some symptoms")
+            }
+            let matches = [];
+            symptoms.forEach(s => {
+                let sympt = null;
+                if (/fever/i.test(s)) {
+                    sympt = fever;
+                } else if (/cough/i.test(s)) {
+                    sympt = cough;
+                } else if (/sneez/i.test(s)) {
+                    sympt = sneeze;
+                } else if (/weak/i.test(s)) {
+                    sympt = weakness;
+                } else if (/head.*ache/i.test(s)) {
+                    sympt = headache;
+                } else if (/(chest\s*pain|pain.+chest)/i.test(s)) {
+                    sympt = chestPains;
+                } else if (/shiv/i.test(s)) {
+                    sympt = shiver;
+                }
+                if (sympt)
+                    matches.push(_.map(whatHasSymptom(sympt), function (x) {
+                        return x.id;
+                    }))
+            });
+            return _.intersection.apply(_, matches);
+        };
+        // let m = doDiagnosis(['cough', 'headache']);
+        // console.log(JSON.stringify(m, null, 4));
+    </script>
+    <script type="text/javascript" language="javascript">
+        const diagnose = function () {
+            let symptoms = [];
+            let inputs = document.getElementsByTagName('input');
+            for (let i = 0; i < 5; i++) {
+                let input = inputs[i];
+                if (input.value) symptoms.push(input.value);
+            }
+            if (!symptoms || !symptoms.length) {
+                return alert("Please enter some symptoms to proceed");
+            }
+            let diagnosed = doDiagnosis(symptoms);
+            let html = "<h3>Not enough information provided for a conclusive diagnosis</h3>";
+            if (diagnosed && diagnosed.length) {
+                html = "<h2>You are possibly suffering from:</h2><ul>";
+                diagnosed.forEach(x => {
+                    html += "<li><h3>" + x + "</h3></li>"
+                });
+                html += "</ul>";
+            }
+            document.getElementById('results').innerHTML = html;
+        };
+        const _clear = function () {
+            document.getElementById('results').innerHTML = "";
+            let inputs = document.getElementsByTagName('input');
+            for (let i = 0; i < 5; i++) {
+                let input = inputs[i];
+                input.value = "";
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="css/form.css"/>
+
+</head>
+<body>
+<h1>Evaluate Symptoms</h1><br/>
+<hr/>
+<noscript>
+    <h3 style="color: red">Please enable Javascript for this application to run.</h3>
+    <hr/>
+</noscript>
+<form id="form" style="float: right;">
+    <fieldset id="resultsCntainer">
+        <legend>Diagnosis Results</legend>
+
+    </fieldset>
+    <div id="results"></div>
+</form>
+<form id="form" name="symptoms">
+
+    <fieldset style="">
+        <legend>Enter your symptoms</legend>
+        <ol>
+            <li>
+                <label for="s1">Symptom 1</label><input name="s1" type="text" id="input1"/>
+
+                <div class="listWrap" id="listWrap1">
+                    <ul class="searchList" id="searchList1">
+                    </ul>
+                </div>
+            </li>
+
+
+            <li>
+                <label for="s2">Symptom 2</label><input name="s2" type="text" id="input2"/>
+
+                <div class="listWrap" id="listWrap2">
+                    <ul class="searchList" id="searchList2">
+                    </ul>
+                </div>
+            </li>
+
+
+            <li>
+                <label for="s3">Symptom 3</label><input name="s3" type="text" id="input3"/>
+
+                <div class="listWrap" id="listWrap3">
+                    <ul class="searchList" id="searchList3">
+                    </ul>
+                </div>
+            </li>
+
+
+            <li>
+                <label for="s4">Symptom 4</label><input name="s4" type="text" id="input4"/>
+
+                <div class="listWrap" id="listWrap4">
+                    <ul class="searchList" id="searchList4">
+                    </ul>
+                </div>
+            </li>
+
+
+            <li>
+                <label for="s5">Symptom 5</label><input name="s5" type="text" id="input5"/>
+
+                <div class="listWrap" id="listWrap5">
+                    <ul class="searchList" id="searchList5">
+                    </ul>
+                </div>
+            </li>
+
+
+        </ol>
+
+
+        <fieldset style="margin-top: 10px; float: right">
+            <legend>
+                <button type="button" name="reset" id="reset" onclick="_clear(); return false;" style="display: inline">Reset</button>
+                <button type="button" name="submit" id="submit" onclick="diagnose();return false;"
+                        style="display: inline">Diagnose
+                </button>
+            </legend>
+        </fieldset>
+    </fieldset>
+</form>
+</body>
+</html>
